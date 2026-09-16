@@ -44,6 +44,8 @@
 --- If DENO ROOT is found, and it's longer than or equal to PROJECT ROOT, then this is a Deno file, and we abort.
 --- Otherwise, attach at PROJECT ROOT, or the cwd if not found.
 
+local util = require 'lspconfig.util'
+
 ---@type vim.lsp.Config
 return {
   settings = {
@@ -62,14 +64,7 @@ return {
     },
   },
   cmd = function(dispatchers, config)
-    local cmd = 'tsgo'
-    if (config or {}).root_dir then
-      local local_cmd = vim.fs.joinpath(config.root_dir, 'node_modules/.bin', cmd)
-      if vim.fn.executable(local_cmd) == 1 then
-        cmd = local_cmd
-      end
-    end
-    return vim.lsp.rpc.start({ cmd, '--lsp', '--stdio' }, dispatchers)
+    return util.start_rpc_node_lsp({ 'tsgo', '--lsp', '--stdio' }, dispatchers, config)
   end,
   filetypes = {
     'javascript',

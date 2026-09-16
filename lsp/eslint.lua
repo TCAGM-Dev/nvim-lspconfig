@@ -83,7 +83,7 @@ local eslint_config_files = {
 ---@type vim.lsp.Config
 return {
   cmd = function(dispatchers, config)
-    return util.start_rpc_node_lsp({'vscode-eslint-language-server', '--stdio'}, dispatchers, config)
+    return util.start_rpc_node_lsp({ 'vscode-eslint-language-server', '--stdio' }, dispatchers, config)
   end,
   filetypes = {
     'javascript',

@@ -2,6 +2,11 @@
 ---
 --- https://github.com/angular/vscode-ng-language-service
 --- `angular-language-server` can be installed via npm `npm install -g @angular/language-server`.
+--- > [!IMPORTANT]
+--- > When installing via an `nvm`-managed `npm`, do so under your "default" version:
+--- > ```sh
+--- > nvm use default && npm install -g @angular/language-server
+--- > ```
 ---
 --- ```lua
 --- local project_library_path = "/path/to/project/lib"
@@ -11,6 +16,8 @@
 ---   cmd = cmd,
 --- })
 --- ```
+
+local util = require 'lspconfig.util'
 
 -- Angular requires a node_modules directory to probe for @angular/language-service and typescript
 -- in order to use your projects configured versions.
@@ -115,7 +122,7 @@ return {
       '--angularCoreVersion',
       get_angular_core_version(root_dir),
     }
-    return vim.lsp.rpc.start(cmd, dispatchers)
+    return util.start_rpc_node_lsp(cmd, dispatchers, config)
   end,
 
   filetypes = { 'typescript', 'html', 'typescriptreact', 'htmlangular' },

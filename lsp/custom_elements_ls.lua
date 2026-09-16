@@ -6,6 +6,11 @@
 --- ```sh
 --- npm install -g typescript custom-elements-languageserver
 --- ```
+--- > [!IMPORTANT]
+--- > When installing via an `nvm`-managed `npm`, do so under your "default" version:
+--- > ```sh
+--- > nvm use default && npm install -g custom-elements-languageserver
+--- > ```
 --- To configure typescript language server, add a
 --- [`tsconfig.json`](https://www.typescriptlang.org/docs/handbook/tsconfig-json.html) or
 --- [`jsconfig.json`](https://code.visualstudio.com/docs/languages/jsconfig) to the root of your
@@ -27,6 +32,8 @@
 ---@type vim.lsp.Config
 return {
   init_options = { hostInfo = 'neovim' },
-  cmd = { 'custom-elements-languageserver', '--stdio' },
+  cmd = function(dispatchers, config)
+    return util.start_rpc_node_lsp({ 'custom-elements-languageserver', '--stdio' }, dispatchers, config)
+  end,
   root_markers = { 'tsconfig.json', 'package.json', 'jsconfig.json', '.git' },
 }

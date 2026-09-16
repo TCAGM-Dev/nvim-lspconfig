@@ -9,10 +9,17 @@
 --- ```sh
 --- npm i -g css-variables-language-server
 --- ```
+--- > [!IMPORTANT]
+--- > When installing via an `nvm`-managed `npm`, do so under your "default" version:
+--- > ```sh
+--- > nvm use default && npm i -g css-variables-language-server
+--- > ```
 
 ---@type vim.lsp.Config
 return {
-  cmd = { 'css-variables-language-server', '--stdio' },
+  cmd = function(dispatchers, config)
+    return util.start_rpc_node_lsp({ 'css-variables-language-server', '--stdio' }, dispatchers, config)
+  end,
   filetypes = { 'css', 'scss', 'less' },
 
   -- Taken from lsp/ts_ls.lua to handle simple projects and monorepos.

@@ -31,7 +31,7 @@ local util = require 'lspconfig.util'
 ---@type vim.lsp.Config
 return {
   cmd = function(dispatchers, config)
-    return util.start_rpc_node_lsp({'vscode-json-language-server', '--stdio'}, dispatchers, config)
+    return util.start_rpc_node_lsp({ 'vscode-json-language-server', '--stdio' }, dispatchers, config)
   end,
   filetypes = { 'json', 'jsonc' },
   init_options = {

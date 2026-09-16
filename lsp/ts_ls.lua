@@ -8,6 +8,11 @@
 --- ```sh
 --- npm install -g typescript typescript-language-server
 --- ```
+--- > [!IMPORTANT]
+--- > When installing via an `nvm`-managed `npm`, do so under your "default" version:
+--- > ```sh
+--- > nvm use default && npm install -g typescript typescript-language-server
+--- > ```
 ---
 --- To configure typescript language server, add a
 --- [`tsconfig.json`](https://www.typescriptlang.org/docs/handbook/tsconfig-json.html) or
@@ -73,18 +78,13 @@
 --- If DENO ROOT is found, and it's longer than or equal to PROJECT ROOT, then this is a Deno file, and we abort.
 --- Otherwise, attach at PROJECT ROOT, or the cwd if not found.
 
+local util = require 'lspconfig.util'
+
 ---@type vim.lsp.Config
 return {
   init_options = { hostInfo = 'neovim' },
   cmd = function(dispatchers, config)
-    local cmd = 'typescript-language-server'
-    if (config or {}).root_dir then
-      local local_cmd = vim.fs.joinpath(config.root_dir, 'node_modules/.bin', cmd)
-      if vim.fn.executable(local_cmd) == 1 then
-        cmd = local_cmd
-      end
-    end
-    return vim.lsp.rpc.start({ cmd, '--stdio' }, dispatchers)
+    return util.start_rpc_node_lsp({ 'typescript-language-server', '--stdio' }, dispatchers, config)
   end,
   filetypes = {
     'javascript',

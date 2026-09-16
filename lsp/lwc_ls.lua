@@ -16,10 +16,17 @@
 ---   }
 --- })
 --- ```
+--- > [!IMPORTANT]
+--- > When installing via an `nvm`-managed `npm`, do so under your "default" version:
+--- > ```sh
+--- > nvm use default && npm install -g @salesforce/lwc-language-server
+--- > ```
 
 ---@type vim.lsp.Config
 return {
-  cmd = { 'lwc-language-server', '--stdio' },
+  cmd = function(dispatchers, config)
+    return util.start_rpc_node_lsp({ 'lwc-language-server', '--stdio' }, dispatchers, config)
+  end,
   filetypes = { 'javascript', 'html' },
   root_markers = { 'sfdx-project.json' },
   init_options = {

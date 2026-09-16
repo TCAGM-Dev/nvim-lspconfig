@@ -32,7 +32,7 @@ local util = require 'lspconfig.util'
 ---@type vim.lsp.Config
 return {
   cmd = function(dispatchers, config)
-    return util.start_rpc_node_lsp({'vscode-html-language-server', '--stdio'}, dispatchers, config)
+    return util.start_rpc_node_lsp({ 'vscode-html-language-server', '--stdio' }, dispatchers, config)
   end,
   filetypes = { 'html' },
   root_markers = { 'package.json', '.git' },

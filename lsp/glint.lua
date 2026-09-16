@@ -21,17 +21,21 @@
 ---     },
 ---   },
 --- })
+--- > [!IMPORTANT]
+--- > When installing via an `nvm`-managed `npm`, do so under your "default" version:
+--- > ```sh
+--- > nvm use default && npm install -g glint-language-server
+--- > ```
+
+local util = require 'lspconfig.util'
 
 ---@type vim.lsp.Config
 return {
   cmd = function(dispatchers, config)
     local cmd = 'glint-language-server'
     ---@diagnostic disable-next-line: undefined-field
-    if not config.init_options.glint.useGlobal and (config or {}).root_dir then
-      local local_cmd = vim.fs.joinpath(config.root_dir, 'node_modules/.bin', cmd)
-      if vim.fn.executable(local_cmd) == 1 then
-        cmd = local_cmd
-      end
+    if not config.init_options.glint.useGlobal then
+      return util.start_rpc_node_lsp({ cmd }, dispatchers, config)
     end
     return vim.lsp.rpc.start({ cmd }, dispatchers)
   end,

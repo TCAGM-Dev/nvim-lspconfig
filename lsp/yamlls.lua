@@ -6,6 +6,11 @@
 --- ```sh
 --- yarn global add yaml-language-server
 --- ```
+--- > [!IMPORTANT]
+--- > When installing via an `nvm`-managed `yarn`, do so under your "default" version:
+--- > ```sh
+--- > nvm use default && yarn global add yaml-language-server
+--- > ```
 ---
 --- To use a schema for validation, there are two options:
 ---
@@ -59,17 +64,12 @@
 --- })
 --- ```
 
+local util = require 'lspconfig.util'
+
 ---@type vim.lsp.Config
 return {
   cmd = function(dispatchers, config)
-    local cmd = 'yaml-language-server'
-    if (config or {}).root_dir then
-      local local_cmd = vim.fs.joinpath(config.root_dir, 'node_modules/.bin', cmd)
-      if vim.fn.executable(local_cmd) == 1 then
-        cmd = local_cmd
-      end
-    end
-    return vim.lsp.rpc.start({ cmd, '--stdio' }, dispatchers)
+    return util.start_rpc_node_lsp({ 'yaml-language-server', '--stdio' }, dispatchers, config)
   end,
   filetypes = { 'yaml', 'yaml.docker-compose', 'yaml.gitlab', 'yaml.helm-values' },
   root_markers = { '.git' },

@@ -6,6 +6,11 @@
 --- ```sh
 --- npm install -g @astrojs/language-server
 --- ```
+--- > [!IMPORTANT]
+--- > When installing via an `nvm`-managed `npm`, do so under your "default" version:
+--- > ```sh
+--- > nvm use default && npm install -g @astrojs/language-server
+--- > ```
 ---
 --- If typescript is installed globally, you might get the `\`typescript.tsdk\` init option is required` error.
 --- You will need to manually pass the typescript SDK path. Here is an example of a Nix configuration where typescript is installed via Nix's Home-manager:
@@ -48,14 +53,7 @@ local util = require 'lspconfig.util'
 ---@type vim.lsp.Config
 return {
   cmd = function(dispatchers, config)
-    local cmd = 'astro-ls'
-    if (config or {}).root_dir then
-      local local_cmd = vim.fs.joinpath(config.root_dir, 'node_modules/.bin', cmd)
-      if vim.fn.executable(local_cmd) == 1 then
-        cmd = local_cmd
-      end
-    end
-    return vim.lsp.rpc.start({ cmd, '--stdio' }, dispatchers)
+    return util.start_rpc_node_lsp({ 'astro-ls', '--stdio' }, dispatchers, config)
   end,
   filetypes = { 'astro' },
   root_markers = { 'package.json', 'tsconfig.json', 'jsconfig.json', '.git' },
