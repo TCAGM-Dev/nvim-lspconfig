@@ -110,17 +110,19 @@ function M.start_rpc_node_lsp(cmd, dispatchers, config)
   local _cmd = cmd
   local env = {}
 
-  local nvm_exec = '/usr/share/nvm/nvm-exec'
-  if vim.fn.executable(nvm_exec) == 1 then
-    _cmd = { nvm_exec, unpack(cmd) }
-    env['NODE_VERSION'] = 'default'
-    env['NVM_DIR'] = vim.fs.joinpath(os.getenv('HOME'), '.nvm')
-  end
+  if vim.fn.executable(bin) == 0 then
+    local nvm_exec = '/usr/share/nvm/nvm-exec'
+    if vim.fn.executable(nvm_exec) == 1 then
+      _cmd = { nvm_exec, unpack(cmd) }
+      env['NODE_VERSION'] = 'default'
+      env['NVM_DIR'] = vim.fs.joinpath(os.getenv('HOME'), '.nvm')
+    end
 
-  if (config or {}).root_dir then
-    local local_bin = vim.fs.joinpath(config.root_dir, 'node_modules/.bin', bin)
-    if vim.fn.executable(local_bin) == 1 then
-      _cmd = { local_bin }
+    if (config or {}).root_dir then
+      local local_bin = vim.fs.joinpath(config.root_dir, 'node_modules/.bin', bin)
+      if vim.fn.executable(local_bin) == 1 then
+        _cmd = { local_bin }
+      end
     end
   end
 
