@@ -6,6 +6,11 @@
 --- ```sh
 --- npm i -g vscode-langservers-extracted
 --- ```
+--- > [!IMPORTANT]
+--- > When installing via an `nvm`-managed `npm`, do so under your "default" version:
+--- > ```sh
+--- > nvm use default && npm i -g vscode-langservers-extracted
+--- > ```
 ---
 --- Neovim does not currently include built-in snippets. `vscode-html-language-server` only provides completions when snippet support is enabled.
 --- To enable completion, install a snippet plugin and add the following override to your language client capabilities during setup.
@@ -22,17 +27,12 @@
 --- })
 --- ```
 
+local util = require 'lspconfig.util'
+
 ---@type vim.lsp.Config
 return {
   cmd = function(dispatchers, config)
-    local cmd = 'vscode-html-language-server'
-    if (config or {}).root_dir then
-      local local_cmd = vim.fs.joinpath(config.root_dir, 'node_modules/.bin', cmd)
-      if vim.fn.executable(local_cmd) == 1 then
-        cmd = local_cmd
-      end
-    end
-    return vim.lsp.rpc.start({ cmd, '--stdio' }, dispatchers)
+    return util.start_rpc_node_lsp({'vscode-html-language-server', '--stdio'}, dispatchers, config)
   end,
   filetypes = { 'html' },
   root_markers = { 'package.json', '.git' },
