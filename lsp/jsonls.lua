@@ -26,29 +26,12 @@
 --- })
 --- ```
 
+local util = require 'lspconfig.util'
+
 ---@type vim.lsp.Config
 return {
   cmd = function(dispatchers, config)
-    local bin = 'vscode-json-language-server'
-    local cmd = { bin }
-    local env = {}
-
-    local nvm_exec = '/usr/share/nvm/nvm-exec'
-    if vim.fn.executable(nvm_exec) then
-      cmd = { nvm_exec, bin }
-      env['NODE_VERSION'] = 'default'
-      env['NVM_DIR'] = vim.fs.joinpath(os.getenv('HOME'), '.nvm')
-    end
-
-    if (config or {}).root_dir then
-      local local_bin = vim.fs.joinpath(config.root_dir, 'node_modules/.bin', bin)
-      if vim.fn.executable(local_bin) == 1 then
-        cmd = { local_bin }
-      end
-    end
-
-    table.insert(cmd, '--stdio')
-    return vim.lsp.rpc.start(cmd, dispatchers, { env = env })
+    return util.start_rpc_node_lsp({'vscode-json-language-server', '--stdio'}, dispatchers, config)
   end,
   filetypes = { 'json', 'jsonc' },
   init_options = {

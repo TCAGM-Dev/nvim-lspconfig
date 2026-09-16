@@ -101,6 +101,31 @@ function M.get_typescript_server_path(root_dir)
   return ''
 end
 
+---@param cmd string[] Command to run for the LSP in argv-array form
+---@param dispatchers vim.lsp.rpc.Dispatchers
+---@param config vim.lsp.ClientConfig
+---@return vim.lsp.rpc.PublicClient
+function M.start_rpc_node_lsp(cmd, dispatchers, config)
+  local _cmd = cmd
+  local env = {}
+
+  local nvm_exec = '/usr/share/nvm/nvm-exec'
+  if vim.fn.executable(nvm_exec) then
+    _cmd = { nvm_exec, unpack(cmd) }
+    env['NODE_VERSION'] = 'default'
+    env['NVM_DIR'] = vim.fs.joinpath(os.getenv('HOME'), '.nvm')
+  end
+
+  if (config or {}).root_dir then
+    local local_bin = vim.fs.joinpath(config.root_dir, 'node_modules/.bin', bin)
+    if vim.fn.executable(local_bin) == 1 then
+      _cmd = { local_bin }
+    end
+  end
+
+  return vim.lsp.rpc.start(_cmd, dispatchers, { env = env })
+end
+
 ---
 ---
 ---
