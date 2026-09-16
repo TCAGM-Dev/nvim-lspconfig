@@ -106,6 +106,7 @@ end
 ---@param config vim.lsp.ClientConfig
 ---@return vim.lsp.rpc.PublicClient
 function M.start_rpc_node_lsp(cmd, dispatchers, config)
+  local bin = cmd[1]
   local _cmd = cmd
   local env = {}
 
